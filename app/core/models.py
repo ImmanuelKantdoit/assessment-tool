@@ -53,6 +53,7 @@ class Question(models.Model):
     def __str__(self):
         return self.question
 
+
 class Answer(models.Model):
     question = models.OneToOneField(Question, on_delete=models.CASCADE)
     answer = models.CharField(max_length=200)
@@ -62,12 +63,15 @@ class Answer(models.Model):
 
 
 class Choice(models.Model):
-    question = models.ForeignKey(Question, related_name='choices', on_delete=models.CASCADE)
+    question = models.ForeignKey(
+        Question,
+        related_name='choices',
+        on_delete=models.CASCADE
+        )
     choice = models.CharField(max_length=200)
 
     def __str__(self):
         return self.choice
-
 
     @classmethod
     def save_choices(cls, question, choices_list):
@@ -77,7 +81,6 @@ class Choice(models.Model):
         choices_str = ', '.join(choices_list)
         cls.objects.create(question=question, choice=choices_str)
 
-
     @classmethod
     def get_choices(cls, question):
         """
@@ -85,4 +88,3 @@ class Choice(models.Model):
         """
         choices_str = cls.objects.get(question=question).choice
         return choices_str.split(', ')
-

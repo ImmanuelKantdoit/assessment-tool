@@ -56,7 +56,7 @@ class ModelTest(TestCase):
     def test_create_question(self):
         """Test creating a question"""
         question = models.Question.objects.create(
-            question = "Is this a question?"
+            question="Is this a question?"
         )
         self.assertEqual(str(question), question.question)
 
@@ -79,18 +79,10 @@ class ModelTest(TestCase):
     def test_create_answer(self):
         """Test creating a question"""
         question = models.Question.objects.create(
-            question = "Is this a question?"
+            question="Is this a question?"
         )
         answer = models.Answer.objects.create(
             question=question,
             answer="No"
         )
         self.assertEqual(str(answer), answer.answer)
-
-
-
-
-
-
-
-

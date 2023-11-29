@@ -55,34 +55,36 @@ class ModelTest(TestCase):
 
     def test_create_question(self):
         """Test creating a question"""
+        question1 = 'Is this a question?'
+        answer_choice = models.Choice.objects.create(
+            choice='this is the answer'
+            )
+        choice = models.Choice.objects.create(
+            choice='this is not the answer'
+            )
         question = models.Question.objects.create(
-            question="Is this a question?"
+            question=question1,
+            answer=answer_choice,
         )
-        self.assertEqual(str(question), question.question)
+        question.choices.set([answer_choice, choice])
+
+        self.assertEqual(question.question, question1)
+        self.assertEqual(question.answer, answer_choice)
+        self.assertIn(answer_choice, question.choices.all())
+        self.assertIn(choice, question.choices.all())
 
     def test_create_choice(self):
-        """Test creating a question with choices"""
-        question = models.Question.objects.create(
-            question="Is this a question?"
-        )
-        choice_list = ["Yes", "No", "Maybe"]
+        """Test creating choices"""
 
-        # Create choices for the question
-        models.Choice.save_choices(question, choice_list)
-
-        # Retrieve the choices for the question using get_choices
-        saved_choices = models.Choice.get_choices(question)
+        choice1 = 'Yes'
+        choice2 = 'No'
+        uploaded_choice1 = models.Choice.objects.create(
+            choice=choice1
+            )
+        uploaded_choice2=models.Choice.objects.create(
+            choice=choice2
+            )
 
         # Check if the saved choices match the original choices
-        self.assertEqual(saved_choices, choice_list)
-
-    def test_create_answer(self):
-        """Test creating a question"""
-        question = models.Question.objects.create(
-            question="Is this a question?"
-        )
-        answer = models.Answer.objects.create(
-            question=question,
-            answer="No"
-        )
-        self.assertEqual(str(answer), answer.answer)
+        self.assertEqual(choice1,uploaded_choice1.choice)
+        self.assertEqual(choice2,uploaded_choice2.choice)

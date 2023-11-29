@@ -9,6 +9,7 @@ from user.serializers import (
     UserSerializer,
     AuthTokenSerializer
 )
+from rest_framework import status
 
 
 class CreateUserView(generics.CreateAPIView):

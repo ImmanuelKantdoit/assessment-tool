@@ -12,5 +12,5 @@ urlpatterns = [
     path('create/', views.CreateUserView.as_view(), name='create'),
     path('token/', views.CreateTokenView.as_view(), name='token'),
     path('edit/', views.ManageUserView.as_view(), name='edit'),
-    path('user/', views.RetrieveUserView.as_view(), name='user')
+    path('user/', views.RetrieveUserView.as_view(), name='user'),
 ]

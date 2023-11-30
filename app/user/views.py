@@ -9,7 +9,8 @@ from user.serializers import (
     UserSerializer,
     AuthTokenSerializer
 )
-from rest_framework import status
+from core.models import User
+from user.permissions import IsAdminUser
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -43,3 +44,19 @@ class RetrieveUserView(generics.RetrieveAPIView):
     def get_object(self):
         """Retrieve and return the authenticated"""
         return self.request.user
+
+
+class RetrieveAllUsersView(generics.ListAPIView):
+    """Retrieve a list of all users - Super Admin only"""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [IsAdminUser]
+
+
+class EditUserDetailsView(generics.UpdateAPIView):
+    """Edit user details including roles - Super Admin only"""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [IsAdminUser]

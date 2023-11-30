@@ -123,6 +123,7 @@ class PrivateUserTest(TestCase):
             password='testpass123',
             firstname='Test',
             lastname='Name',
+            role='examinee'
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
@@ -136,6 +137,7 @@ class PrivateUserTest(TestCase):
             'firstname': self.user.firstname,
             'lastname': self.user.lastname,
             'email': self.user.email,
+            'role': self.user.role
         })
 
     def test_post_me_not_allowed(self):
@@ -149,8 +151,9 @@ class PrivateUserTest(TestCase):
         payload = {
             'firstname': 'Updated firstname',
             'lastname': 'Updated lastname',
-            'password': 'newpassword123'
-            }
+            'password': 'newpassword123',
+            'role': 'admin'
+        }
 
         res = self.client.patch(EDIT_URL, payload)
 
@@ -158,4 +161,5 @@ class PrivateUserTest(TestCase):
         self.assertEqual(self.user.firstname, payload['firstname'])
         self.assertEqual(self.user.lastname, payload['lastname'])
         self.assertTrue(self.user.check_password(payload['password']))
+        self.assertEqual(self.user.role, payload['role'])
         self.assertEqual(res.status_code, status.HTTP_200_OK)

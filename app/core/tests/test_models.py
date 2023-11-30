@@ -81,10 +81,10 @@ class ModelTest(TestCase):
         uploaded_choice1 = models.Choice.objects.create(
             choice=choice1
             )
-        uploaded_choice2=models.Choice.objects.create(
+        uploaded_choice2 = models.Choice.objects.create(
             choice=choice2
             )
 
         # Check if the saved choices match the original choices
-        self.assertEqual(choice1,uploaded_choice1.choice)
-        self.assertEqual(choice2,uploaded_choice2.choice)
+        self.assertEqual(choice1, uploaded_choice1.choice)
+        self.assertEqual(choice2, uploaded_choice2.choice)

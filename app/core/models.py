@@ -1,14 +1,12 @@
 """
 Database models
 """
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
-from django.contrib.auth.models import Group, Permission
 
 
 class UserManager(BaseUserManager):
@@ -36,11 +34,13 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """User in the system"""
+    SUPER_ADMIN = 'super admin'
     ADMIN = 'admin'
     EXAMINEE = 'examinee'
     ROLE_CHOICES = [
         (EXAMINEE, 'Examinee'),
         (ADMIN, 'Admin'),
+        (SUPER_ADMIN, 'Super Admin')
     ]
 
     email = models.EmailField(max_length=255, unique=True)
@@ -50,11 +50,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     Created_Date = models.DateTimeField(auto_now_add=True)
     Modified_Date = models.DateTimeField(auto_now=True)
-    # role = models.Choices(
-    #     max_length=20,
-    #     choices=ROLE_CHOICES,
-    #     default="Exa"
-    # )
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default=EXAMINEE
+    )
 
     objects = UserManager()
 

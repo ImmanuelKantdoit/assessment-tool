@@ -13,4 +13,14 @@ urlpatterns = [
     path('token/', views.CreateTokenView.as_view(), name='token'),
     path('edit/', views.ManageUserView.as_view(), name='edit'),
     path('user/', views.RetrieveUserView.as_view(), name='user'),
+    path(
+        'users/',
+        views.RetrieveAllUsersView.as_view(),
+        name='all-users'
+    ),
+    path(
+        'edit/<int:pk>/',
+        views.EditUserDetailsView.as_view(),
+        name='edit-user-details'
+    ),
 ]

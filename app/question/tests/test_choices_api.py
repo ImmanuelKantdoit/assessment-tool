@@ -14,6 +14,7 @@ from question.serializers import ChoiceSerializer
 
 CHOICE_URL = reverse('question:choice-list')
 
+
 def detail_url(choice_id):
     """Create and return a choice detail URL"""
 
@@ -26,6 +27,7 @@ def create_choice(**params):
     defaults.update(params)
 
     return Choice.objects.create(**defaults)
+
 
 def create_user(**params):
     """Create and return a new user"""
@@ -45,6 +47,19 @@ class PublicQuestionAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_examinee_cannot_retrieve_questions(self):
+        """Test that examinee cannot retrieve a list of questions"""
+        user = create_user(
+            email='examinee@example.com',
+            password='testpass123',
+            role='examinee'
+        )
+        self.client.force_authenticate(user)
+
+        res = self.client.get(CHOICE_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class PrivateChoiceAPITests(TestCase):
     """Test Choices API"""
@@ -54,6 +69,7 @@ class PrivateChoiceAPITests(TestCase):
         self.user = create_user(
             email='user@example.com',
             password='testpass123',
+            role='admin'
         )
         self.client.force_authenticate(self.user)
 
@@ -61,7 +77,7 @@ class PrivateChoiceAPITests(TestCase):
         """Test creating a new choice"""
         # Create a sample question
         payload = {
-        'choice': 'choice2',
+            'choice': 'choice2',
         }
 
         # Use the created question in the payload
@@ -115,3 +131,25 @@ class PrivateChoiceAPITests(TestCase):
             Choice.objects.filter(
                 id=choice.id).exists()
             )
+
+    def test_examinee_cannot_update_choice(self):
+        """Test that examinee cannot update a question"""
+        examinee_user = create_user(
+            email='examinee@example.com',
+            password='testpass123',
+            role='examinee'
+        )
+        self.client.force_authenticate(examinee_user)
+
+        choice = create_choice()
+
+        payload = {'choice': 'test choice'}
+        url = detail_url(choice.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        choice.refresh_from_db()
+
+        # Ensure that the question is not updated
+        self.assertEqual(choice.choice, 'choice1')
+        self.assertNotEqual(choice.choice, payload['choice'])
